@@ -1,8 +1,8 @@
 extends Node
 
 
-signal rewarded_ad(args)
-signal ad(args)
+signal rewarded_ad(result)
+signal ad(result)
 signal game_initialized()
 signal player_initialized()
 signal data_loaded(data)
@@ -52,24 +52,24 @@ func init_player():
 		window.InitPlayer(false, callback_player_initialized)
 
 
-func save_data(data: Dictionary, force: bool = true):
+func save_data(data: Dictionary, flush: bool = false):
 	if OS.has_feature("yandex"):
 		if not player_inialized:
 			yield(self, "player_initialized")
 		var saves = JavaScript.create_object("Object")
 		for i in data.keys():
 			saves[i] = data[i]
-		window.SaveData(saves, force)
+		window.SaveData(saves, flush)
 
 
-func save_stats(stats: Dictionary, force: bool = true):
+func save_stats(stats: Dictionary):
 	if OS.has_feature("yandex"):
 		if not player_inialized:
 			yield(self, "player_initialized")
 		var saves = JavaScript.create_object("Object")
 		for i in stats.keys():
 			saves[i] = stats[i]
-		window.SaveStats(saves, force)
+		window.SaveStats(saves)
 
 
 func load_data(keys: Array):
@@ -89,7 +89,7 @@ func load_stats(keys: Array):
 		var saves = JavaScript.create_object("Array", keys.size())
 		for i in range(keys.size()):
 			saves[i] = keys[i]
-		window.LoadData(saves, callback_stats_loaded)
+		window.LoadStats(saves, callback_stats_loaded)
 
 
 func _rewarded_ad(args):
@@ -99,7 +99,7 @@ func _rewarded_ad(args):
 
 func _ad(args):
 	print("ad res: ", args[0])
-	emit_signal("ad", args)
+	emit_signal("ad", args[0])
 
 
 func _data_loaded(args):
@@ -110,6 +110,7 @@ func _data_loaded(args):
 		for i in range(keys.length):
 			result[keys[i]] = values[i]
 		print(result)
+		emit_signal("data_loaded", result)
 
 
 func _stats_loaded(args):
@@ -120,6 +121,7 @@ func _stats_loaded(args):
 		for i in range(keys.length):
 			result[keys[i]] = values[i]
 		print(result)
+		emit_signal("stats_loaded", result)
 
 
 func _game_initialized(args):

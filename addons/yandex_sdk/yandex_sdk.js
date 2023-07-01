@@ -36,11 +36,11 @@ function ShowAd(callback) {
     ysdk.adv.showFullscreenAdv({
         callbacks: {
             onClose: function(wasShown) {
-                callback(true)
+                callback('closed')
                 console.log('Ad shown');
             },
             onError: function(error) {
-                callback(false)
+                callback('error')
                 console.log('Ad error');
             }
         }
@@ -81,9 +81,9 @@ function SaveData(data, force) {
 }
 
 
-function SaveStats(data, force) {
+function SaveStats(data) {
     console.log('Stats save ', data);
-    player.setStats(data, force).then(() => {
+    player.setStats(data).then(() => {
             console.log('Stats saved');
     });
 }
