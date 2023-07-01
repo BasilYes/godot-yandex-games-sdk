@@ -6,3 +6,8 @@
 /README.md                              export-ignore
 /CONTRIBUTING.md                        export-ignore
 /LICENSE                                export-ignore
+
+# Test stuff
+/main.gd                                export-ignore
+/main.tscn                              export-ignore
+/project.godot                          export-ignore
