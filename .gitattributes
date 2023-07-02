@@ -11,5 +11,6 @@
 /main.gd                                export-ignore
 /main.tscn                              export-ignore
 /project.godot                          export-ignore
-/icon.svg                               export-ignore
-/icon.png                               export-ignore
+
+# Plugin icon
+icon/                                   export-ignore
