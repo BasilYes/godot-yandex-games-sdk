@@ -109,7 +109,6 @@ func _data_loaded(args):
 		var values = JavaScript.get_interface("Object").values(args[1])
 		for i in range(keys.length):
 			result[keys[i]] = values[i]
-		print(result)
 		emit_signal("data_loaded", result)
 
 
@@ -120,7 +119,6 @@ func _stats_loaded(args):
 		var values = JavaScript.get_interface("Object").values(args[1])
 		for i in range(keys.length):
 			result[keys[i]] = values[i]
-		print(result)
 		emit_signal("stats_loaded", result)
 
 
