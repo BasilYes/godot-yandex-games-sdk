@@ -2,27 +2,10 @@
 
 # Yandex games SDK for godot
 
-<div style="
-	width: 100%;
-	display: flex;
-	align-content: space-between;
-	align-items: center;
-	justify-content: space-between;
-">
-<div style="
-	display: inline-block;
-	width: 45%;
-">
-Yandex games SDK <i>unofficial</i> implementation for godot.
+![Godot and Yandex Games](./imgs/godot-yandex.png "Godot and Yandex Games")
+Yandex games SDK *unofficial* implementation for godot.
 I do it for my games, so it's not a complete SDK implementation yet.
 If you lack of some functions, you can do it your self and contribute or create issue. I will be appreciate you.
-</div>
-<img src="./imgs/godot-yandex.png" style="
-	display: inline-block;
-	max-width: 45%;
-	max-height: 250px;
-" /> 
-</div>
 
 ## Get started
 
@@ -73,8 +56,9 @@ YandexSDK.save_data(data: Dictionary, flush: bool = false) -> void
 ```
 
 Saves the user data. The maximum data size should not exceed 200 KB.
-* data: Dictionary, an object containing key-value pairs.
-* flush: Boolean, specifies the order data is sent in. If the value is "true", the data is immediately sent to the server. If it's "false" (default), the request to send data is queued.
+
+* **data**: Dictionary, an object containing key-value pairs.
+* **flush**: Boolean, specifies the order data is sent in. If the value is "true", the data is immediately sent to the server. If it's "false" (default), the request to send data is queued.
 
 ### Saving player numerical data
 
@@ -83,7 +67,8 @@ YandexSDK.save_stats(stats: Dictionary) -> void
 ```
 
 Saves the player's numeric data. The maximum data size must not exceed 10 KB.
-* stats: Object, an object that contains key-value pairs where each value is a number.
+
+* **stats**: Object, an object that contains key-value pairs where each value is a number.
 
 ### Loading player data
 
@@ -92,16 +77,18 @@ YandexSDK.load_data(keys: Array) -> void
 ```
 
 Send request for get in-game player data, when done emmit **signal data_loaded(data)**, data is loaded Dictionary
-* keys: array, the list of keys to return.
 
-### Loading player numerical data 
+* **keys**: array, the list of keys to return.
+
+### Loading player numerical data
 
 ```gdscript
 YandexSDK.load_stats(keys: Array) -> void
 ```
 
 Send request for get player's numeric data, when done emit **signal stats_loaded(data)**, data is loaded Dictionary
-* keys: array, the list of keys to return.
+
+* **keys**: array, the list of keys to return.
 
 For more information check [official site](https://yandex.ru/dev/games/doc/en/sdk/sdk-player)
 Sorry for may bad english, If you see some mistake in readme, you can contribute to fix it. I will be appreciate you.
