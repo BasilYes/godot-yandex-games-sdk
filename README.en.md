@@ -3,6 +3,7 @@
 # Yandex games SDK for godot
 
 ![Godot and Yandex Games](./imgs/godot-yandex.png "Godot and Yandex Games")
+
 Yandex games SDK *unofficial* implementation for godot.
 I do it for my games, so it's not a complete SDK implementation yet.
 If you lack of some functions, you can do it your self and contribute or create issue. I will be appreciate you.
