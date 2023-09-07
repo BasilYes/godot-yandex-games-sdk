@@ -6,12 +6,13 @@
 ;   [section] ; section goes between []
 ;   param=value ; assign values to parameters
 
-config_version=4
+config_version=5
 
 [application]
 
 config/name="YandexGamesSDKTest"
 run/main_scene="res://main.tscn"
+config/features=PackedStringArray("4.1")
 
 [autoload]
 
@@ -19,7 +20,7 @@ YandexSDK="*res://addons/yandex_sdk/yandex_sdk.gd"
 
 [editor_plugins]
 
-enabled=PoolStringArray( "res://addons/yandex_sdk/plugin.cfg" )
+enabled=PackedStringArray("res://addons/yandex_sdk/plugin.cfg")
 
 [gui]
 
@@ -33,4 +34,3 @@ common/enable_pause_aware_picking=true
 
 quality/driver/driver_name="GLES2"
 vram_compression/import_etc=true
-vram_compression/import_etc2=false

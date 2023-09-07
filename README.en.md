@@ -3,24 +3,24 @@
 # Yandex games SDK for godot
 
 <div style="
-    width: 100%;
-    display: flex;
-    align-content: space-between;
-    align-items: center;
-    justify-content: space-between;
+	width: 100%;
+	display: flex;
+	align-content: space-between;
+	align-items: center;
+	justify-content: space-between;
 ">
 <div style="
-    display: inline-block;
-    width: 45%;
+	display: inline-block;
+	width: 45%;
 ">
 Yandex games SDK <i>unofficial</i> implementation for godot.
 I do it for my games, so it's not a complete SDK implementation yet.
 If you lack of some functions, you can do it your self and contribute or create issue. I will be appreciate you.
 </div>
 <img src="./imgs/godot-yandex.png" style="
-    display: inline-block;
-    max-width: 45%;
-    max-height: 250px;
+	display: inline-block;
+	max-width: 45%;
+	max-height: 250px;
 " /> 
 </div>
 

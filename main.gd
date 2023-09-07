@@ -1,13 +1,13 @@
 extends Control
 
 
-onready var line_edit := $HBoxContainer/VBoxContainer2/HBoxContainer/LineEdit
-onready var spin_box := $HBoxContainer/VBoxContainer2/HBoxContainer3/SpinBox
+@onready var line_edit := $HBoxContainer/VBoxContainer2/HBoxContainer/LineEdit
+@onready var spin_box := $HBoxContainer/VBoxContainer2/HBoxContainer3/SpinBox
 
 
 func _ready():
-	YandexSDK.connect("data_loaded", self, "_on_data_loaded")
-	YandexSDK.connect("stats_loaded", self, "_on_stats_loaded")
+	YandexSDK.connect("data_loaded", Callable(self, "_on_data_loaded"))
+	YandexSDK.connect("stats_loaded", Callable(self, "_on_stats_loaded"))
 	YandexSDK.init_game()
 	YandexSDK.init_player()
 	
