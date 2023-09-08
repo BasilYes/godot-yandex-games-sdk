@@ -21,7 +21,7 @@ func _export_end() -> void:
 	if exporting:
 		var file := FileAccess.open(export_path, FileAccess.READ_WRITE)
 		var html := file.get_as_text()
-		file.close()
+		
 		var pos = html.find('</head>')
 		
 		html = html.insert(
@@ -29,7 +29,7 @@ func _export_end() -> void:
 			'<script src="' + JS_SDK_REF + '"></script>\n' + '<script src="' + JS_FILE + '"></script>\n'
 			)
 		
-    DirAccess.copy_absolute(plugin_path + '/' + JS_FILE, export_path.get_base_dir() + '/' + JS_FILE)
+		DirAccess.copy_absolute(plugin_path + '/' + JS_FILE, export_path.get_base_dir() + '/' + JS_FILE)
 		
 		file.store_string(html)
 		file.close()
