@@ -29,8 +29,7 @@ func _export_end() -> void:
 			'<script src="' + JS_SDK_REF + '"></script>\n' + '<script src="' + JS_FILE + '"></script>\n'
 			)
 		
-		#Возможно здесь ошибка
-		file.copy(plugin_path + '/' + JS_FILE, export_path.get_base_dir() + '/' + JS_FILE)
+    DirAccess.copy_absolute(plugin_path + '/' + JS_FILE, export_path.get_base_dir() + '/' + JS_FILE)
 		
 		file.store_string(html)
 		file.close()
