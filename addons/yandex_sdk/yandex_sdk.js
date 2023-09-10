@@ -15,6 +15,93 @@ function InitGame(params, callback) {
     });
 }
 
+var lb;
+function InitLeaderboard(callback) {
+    console.log("Leaderboard start initialization");
+    ysdk.getLeaderboards()
+      .then(_lb => {
+        lb = _lb;
+        console.log("Leaderboard initialized");
+    
+        callback()
+    }).catch(err => {
+        console.log(err);
+        console.log('Leaderboard initialization error');
+    });
+
+}
+
+function GetLeaderboardDescription(leaderboardName, callback) {
+  lb.getLeaderboardDescription(leaderboardName).then(
+      result => {
+      console.log("Leaderboard description:");
+      console.log(result);
+      callback("loaded", result);
+    },
+      error => {
+          console.log('Leaderboard description load error');
+          callback("error");
+      }
+  );
+}
+
+function CheckAuth(callback) {
+    ysdk.isAvailableMethod('leaderboards.setLeaderboardScore')
+      .then(
+      result => {
+        console.log(result);
+        callback(result);
+      },
+      error => {
+          console.log("isAvailableMethod setLeaderboardScore error");
+          callback(false);
+      }
+    );
+}
+
+function SaveLeaderboardScore(leaderboardName, score, extraData) {
+  console.log('Save leaderboard score', score, "on", leaderboardName, "with", extraData);
+    lb.setLeaderboardScore(leaderboardName, score, extraData).then(() => {
+        console.log('Leaderboard score saved');
+    });
+}
+
+function LoadLeaderboardPlayerEntry(leaderboardName, callback) {
+  lb.getLeaderboardPlayerEntry(leaderboardName)
+  .then(res => {
+      console.log("Loader leaderboard player entry:", res)
+      callback("loaded", res);
+    })
+  .catch(err => {
+    if (err.code === 'LEADERBOARD_PLAYER_NOT_PRESENT') {
+      console.log("У игрока нет записи в лидерборде");
+    }
+    else
+      console.log(err);
+    callback("error")
+  });
+}
+
+
+function LoadLeaderboardEntries(leaderboardName, includeUser, quantityAround, quantityTop, callback) {
+  lb.getLeaderboardEntries(leaderboardName, {
+    includeUser: includeUser,
+    quantityAround: quantityAround,
+    quantityTop: quantityTop
+  })
+  .then(res => {
+    console.log("Loaded leaderboard entries:", res);
+    callback("loaded", res);
+  })
+  .catch(err => {
+    if (err.code === 'LEADERBOARD_NOT_FOUND') {
+      console.log("Лидерборд не найден.");
+    } else {
+      console.log(err);
+    }
+    callback("error");
+  });
+}
 
 let player;
 function InitPlayer(full, callback) {
@@ -30,6 +117,19 @@ function InitPlayer(full, callback) {
     });
 }
 
+function OpenAuthDialog() {
+  if (player.getMode() === 'lite') {
+            // Игрок не авторизован.
+            ysdk.auth.openAuthDialog().then(() => {
+                    // Игрок успешно авторизован
+                    player.catch(err => {
+                        // Ошибка при инициализации объекта Player.
+                    });
+                }).catch(() => {
+                    // Игрок не авторизован.
+                });
+        }
+}
 
 function ShowAd(callback) {
     console.log('Show ad');
