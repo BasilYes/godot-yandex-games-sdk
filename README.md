@@ -2,7 +2,7 @@
 
 # Yandex games SDK для Godot 3.x
 
-![Godot и Yandex Игры](./imgs/godot-yandex.png "Godot и Yandex Игры")
+![Godot и Yandex Игры](https://user-images.githubusercontent.com/101056496/266880767-a4c872d1-180d-4424-b9f8-dfedc2731c51.png "Godot и Yandex Игры")
 
 *Неофициальная* реализация Yandex games SDK для Godot.
 Делаю для себя и своих игр, по этому тут реализованны не все методы и не всегда до конца (буду потихоньку доделывать).
@@ -14,7 +14,7 @@
 
 Просто установите плагин и добавьте "yandex" в feature (не знаю как в переводе) к вашему экспорту (см. скрин ниже)
 
-![Пример экспорта](./imgs/export-example.png "пример экспорта")
+![Пример экспорта](https://user-images.githubusercontent.com/101056496/266880786-4838d959-b1b3-4bd3-baf3-ebdc79a511f3.png "пример экспорта")
 
 ## Методы
 
