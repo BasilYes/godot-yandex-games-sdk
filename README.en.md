@@ -93,5 +93,68 @@ Send request for get player's numeric data, when done emit **signal stats_loaded
 
 * **keys**: array, the list of keys to return.
 
+### Initialize Leaderboards
+
+```gdscript
+YandexSDK.init_leaderboard() -> void
+```
+
+Initializes the leaderboards for the game. This method should be called before using other leaderboard-related functions. After successful initialization, the **leaderboard_initialized** signal is emitted, indicating that the leaderboards are ready for use.
+
+### Save a Score to the Leaderboard
+
+```gdscript
+YandexSDK.save_leaderboard_score(leaderboard_name: String, score: int, extra_data: String = "") -> void
+```
+
+Saves a score to the specified leaderboard.
+
+- **leaderboard_name**: A string representing the name of the leaderboard to which the score should be saved.
+- **score**: An integer representing the score to be saved in the leaderboard.
+- **extra_data**: Additional data that can be associated with this leaderboard entry (default is an empty string).
+
+### Load a Player's Entry from the Leaderboard
+
+```gdscript
+YandexSDK.load_leaderboard_player_entry(leaderboard_name: String) -> void
+```
+
+Loads a player's entry from the specified leaderboard. After loading, the **leaderboard_player_entry_loaded(data)** signal is emitted, where **data** is a Dictionary containing information about the player's entry in the leaderboard.
+
+- **leaderboard_name**: A string representing the name of the leaderboard from which to load the player's entry.
+
+### Load Entries of Players
+
+```gdscript
+YandexSDK.load_leaderboard_entries(leaderboard_name: String, include_user: bool, quantity_around: int, quantity_top: int) -> void
+```
+
+Loads entries of players from the specified leaderboard with the ability to customize the number of loaded entries and include information about the authorized user. After loading, the **leaderboard_entries_loaded(data)** signal is emitted, where **data** is a Dictionary containing information about the players' entries in the leaderboard.
+
+- **leaderboard_name**: A string representing the name of the leaderboard from which to load players' entries.
+- **include_user**: A boolean value indicating whether to include information about the authorized user in the loaded results.
+- **quantity_around**: The number of entries below and above the user in the leaderboard to load.
+- **quantity_top**: The number of entries from the top of the leaderboard to load.
+
+
+
+### Check Player's Authorization
+
+```gdscript
+YandexSDK.check_is_authorized() -> void
+```
+
+Checks if the current player is authorized. After the check, it emits the **check_auth(answer)** signal, where **answer** is a boolean value indicating whether the player is authorized.
+
+### Open Authorization Dialog
+
+```gdscript
+YandexSDK.open_auth_dialog() -> void
+```
+
+Opens the player's authorization dialog. It performs an authorization check before opening the dialog.
+
+
+
 For more information check [official site](https://yandex.ru/dev/games/doc/en/sdk/sdk-player)
 Sorry for may bad english, If you see some mistake in readme, you can contribute to fix it. I will be appreciate you.
