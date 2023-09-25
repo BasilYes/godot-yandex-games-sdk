@@ -1,99 +1,155 @@
-<div align="center">
+[ENG](./README.en.md) [RU](./README.md)
 
-# Yandex games SDK for godot
+# Yandex games SDK для Godot 3.x
 
-</div>
-<br />
-Yandex games SDK non official implementation for godot.
-I do it for my games, so it's not a complete SDK implementation yet.
-If you lack of some functions, you can do it your self and contribute or create issue. I will be appreciate you.
+![Godot и Yandex Игры](https://user-images.githubusercontent.com/101056496/266880767-a4c872d1-180d-4424-b9f8-dfedc2731c51.png "Godot и Yandex Игры")
 
-**RU**
-Неофициальная реализация Yandex SDK для godot.
+*Неофициальная* реализация Yandex games SDK для Godot.
 Делаю для себя и своих игр, по этому тут реализованны не все методы и не всегда до конца (буду потихоньку доделывать).
 Если не хватает каких либо функций или я что-то криво сделал, можете создать ошибку (может быть я до неё дойду) или исправить и залить сюда, буду очень признателен.
 
+Протестировано на Godot 3.5.2
 
-## Get started
+## Начало работы
 
-Just install plugin and add "yandex" feature to your export (see below).
-
-**RU**
 Просто установите плагин и добавьте "yandex" в feature (не знаю как в переводе) к вашему экспорту (см. скрин ниже)
-<div align="center">
 
-![image](https://github.com/BasilYes/godot-yandex-games-sdk/assets/36816595/dc522e97-1f2c-4a6e-8a5f-315fe65cc932)
+![Пример экспорта](https://user-images.githubusercontent.com/101056496/266880786-4838d959-b1b3-4bd3-baf3-ebdc79a511f3.png "пример экспорта")
 
-</div>
-<br />
+## Методы
 
-## Methods
+Все методы находятся в синглтоне YandexSDK
 
-All methods stored in YandexSDK singleton.
+### Инициализация Yandex SDK
 
-**RU**
-Все методы находятся в YandexSDK синглтоне.
+```gdscript
+YandexSDK.init_game() -> void
+```
 
-#### YandexSDK.init_game() -> void
-First method you need to call. If you don't, others methods won't work. It's just implement [start game method](https://yandex.ru/dev/games/doc/ru/sdk/sdk-gameready) from yandex sdk documentation.
-
-**RU**
 Самый первый метод, который необходимо вызвать. Он инициализирует YandexSDK, без его вызова не будет работать ни один другой метод sdk. Это просто реализация [метода](https://yandex.ru/dev/games/doc/ru/sdk/sdk-gameready) начала игры из документации.
 
-#### YandexSDK.show_ad() -> void
-Just show ad for user. Ad closing or cousing ad error will emmit **signal ad(result)**, result store 'closed' or 'error' String
+### Показ рекламы
 
-**RU**
-Просто показывает пользователю полноэкранную рекламу. Закрытие рекламы или ошибка показа вызовет сигнал **ad(result)**, переменная result содержит значение 'closed' или 'error'
+```gdscript
+YandexSDK.show_ad() -> void
+```
 
-#### YandexSDK.show_rewarded_ad() -> void
-Show rewarded ad for user. Will emmit **signal rewarded_ad(result)**, result store 'closed', 'rewaeded', 'closed' or 'error' String
+Просто показывает пользователю полноэкранную рекламу. Закрытие рекламы или ошибка показа вызовет сигнал **ad(result)**, переменная result содержит значение 'closed' или 'error'.
 
-**RU**
-Показывает пользователю рекламу с наградой. Вызывает сигнал **rewarded_ad(result)**, переменная result содержит одно из строковых значений 'closed', 'rewaeded', 'closed' или 'error'
+### Показ рекламы за вознаграждение
 
-#### YandexSDK.init_player() -> void
-Initialization of player data, required for saves and other player related stuff. Methods below won't work, without this method calling.
+```gdscript
+YandexSDK.show_rewarded_ad() -> void
+```
 
-**RU**
+Показывает пользователю рекламу с наградой. Вызывает сигнал **rewarded_ad(result)**, переменная result содержит одно из строковых значений 'closed', 'rewaeded', 'closed' или 'error'.
+
+### Инициализация данных игрока
+
+```gdscript
+YandexSDK.init_player() -> void
+```
+
 Инициализация данных игрока, необходимых для сохранения и других действий, связанных с игроком. Приведенные ниже методы не будут работать без вызова этого метода.
 
-#### YandexSDK.save_data(data: Dictionary, flush: bool = false) -> void
-Saves the user data. The maximum data size should not exceed 200 KB.
-* data: Dictionary, an object containing key-value pairs.
-* flush: Boolean, specifies the order data is sent in. If the value is "true", the data is immediately sent to the server. If it's "false" (default), the request to send data is queued.
+### Сохранение данных игрока
 
-**RU**
-Сохраняет данные пользователя. Максимальный размер данных не должен превышать 200 KБ.
-* data: Dictionary, содержащий пары ключ-значение.
-* flush: Boolean, определяет очередность отправки данных. При значении «true» данные будут отправлены на сервер немедленно; «false» (значение по умолчанию) — запрос на отправку данных будет поставлен в очередь.
+```gdscript
+YandexSDK.save_data(data: Dictionary, flush: bool = false) -> void
+```
 
-#### YandexSDK.save_stats(stats: Dictionary) -> void
-Saves the user's numeric data. The maximum data size must not exceed 10 KB.
-* stats: Object, an object that contains key-value pairs where each value is a number.
+Сохраняет данные игрока. Максимальный размер данных не должен превышать 200 KБ.
 
-**RU**
-Сохраняет численные данные пользователя. Максимальный размер данных не должен превышать 10 КБ.
-* stats: Dictionary, содержащий пары ключ-значение, где каждое значение должно быть числом.
+* **data**: Dictionary, содержащий пары ключ-значение.
+* **flush**: Boolean, определяет очередность отправки данных. При значении «true» данные будут отправлены на сервер немедленно; «false» (значение по умолчанию) — запрос на отправку данных будет поставлен в очередь.
 
-#### YandexSDK.load_data(keys: Array) -> void
-Send request for get in-game user data, when done emmit **signal data_loaded(data)**, data is loaded Dictionary
-* keys: array, the list of keys to return.
+### Сохранение численных данных игрока
 
-**RU**
-Отправляет запрос на получение внутриигровых пользовательских данных, после получения вызывает сигнал **data_loaded(data)**, data - Dictionary с полученными данными
-* keys: список ключей, которые необходимо вернуть.
+```gdscript
+YandexSDK.save_stats(stats: Dictionary) -> void
+```
 
-#### YandexSDK.load_stats(keys: Array) -> void
-Send request for get user's numeric data, when done emmit **signal stats_loaded(data)**, data is loaded Dictionary
-* keys: array, the list of keys to return.
+Сохраняет численные данные игрока. Максимальный размер данных не должен превышать 10 КБ.
 
-**RU**
+* **stats**: Dictionary, содержащий пары ключ-значение, где каждое значение должно быть числом.
+
+### Загрузка данных игрока
+
+```gdscript
+YandexSDK.load_data(keys: Array) -> void
+```
+
+Отправляет запрос на получение внутриигровых данных игрока, после получения вызывает сигнал **data_loaded(data)**, data - Dictionary с полученными данными
+
+* **keys**: список ключей, которые необходимо вернуть.
+
+### Загрузка численных данных игрока
+
+```gdscript
+YandexSDK.load_stats(keys: Array) -> void
+```
+
 Отправляет запрос на получение численных данных пользователя, после получения вызывает сигнал **stats_loaded(data)**, data - Dictionary с полученными данными
-* keys: список ключей, которые необходимо вернуть.
 
-For more information check [official site](https://yandex.ru/dev/games/doc/en/sdk/sdk-player)
-Sorry for may bad english, If you see some mistake in readme, you can contribute to fix it. I will be appreciate you.
+* **keys**: список ключей, которые необходимо вернуть.
 
-**RU**
-Больше информации можно найти на [официльаном сайте](https://yandex.ru/dev/games/doc/en/sdk/sdk-player)
+### Инициализация лидербордов
+
+```gdscript
+YandexSDK.init_leaderboard() -> void
+```
+
+Инициализирует лидерборды игры. Этот метод должен быть вызван перед использованием других функций, связанных с лидербордами. После успешной инициализации вызывается сигнал **leaderboard_initialized**, который указывает, что лидерборды готовы к использованию.
+
+### Сохранение значения в лидерборд
+
+```gdscript
+YandexSDK.save_leaderboard_score(leaderboard_name: String, score: int, extra_data: String = "") -> void
+```
+
+Сохраняет значение в указанный лидерборд.
+
+- **leaderboard_name**: Строка, представляющая имя лидерборда, в который необходимо сохранить значение.
+- **score**: Целое число, представляющее собой результат, который необходимо сохранить в лидерборд.
+- **extra_data**: Дополнительные данные, которые могут быть связаны с этой записью в лидерборде (по умолчанию пустая строка).
+
+### Загрузить запись игрока из лидерборда
+
+```gdscript
+YandexSDK.load_leaderboard_player_entry(leaderboard_name: String) -> void
+```
+
+Загружает запись игрока из указанного лидерборда. После загрузки вызывается сигнал **leaderboard_player_entry_loaded(data)**, где **data** - Dictionary с информацией о записи игрока в лидерборде.
+
+- **leaderboard_name**: Строка, представляющая имя лидерборда, из которого необходимо загрузить запись игрока.
+
+### Загрузить записи игроков
+
+```gdscript
+YandexSDK.load_leaderboard_entries(leaderboard_name: String, include_user: bool, quantity_around: int, quantity_top: int) -> void
+```
+
+Загружает записи игроков из указанного лидерборда с возможностью настройки количества загружаемых записей и включения информации об авторизованном пользователе. После загрузки вызывается сигнал **leaderboard_entries_loaded(data)**, где **data** - Dictionary с информацией о записях игроков в лидерборде.
+
+- **leaderboard_name**: Строка, представляющая имя лидерборда, из которого необходимо загрузить записи игроков.
+- **include_user**: Булево значение, указывающее, нужно ли включать информацию об авторизованном пользователе в результаты загрузки.
+- **quantity_around**: Количество записей ниже и выше пользователя по лидерборду, которое необходимо загрузить.
+- **quantity_top**: Количество записей из топа лидерборда, которое необходимо загрузить.
+
+###### Проверка авторизации игрока
+
+```gdscript
+`YandexSDK.check_is_authorized() -> void`
+```
+
+Проверяет, авторизован ли текущий игрок. После проверки вызывает сигнал **check_auth(answer)**, где **answer** - булево значение, указывающее, авторизован ли игрок.
+
+### Открыть окно авторизации
+
+```gdscript
+YandexSDK.open_auth_dialog() -> void`
+```
+
+Открывает окно авторизации игрока. Перед открытием окна выполняет проверку авторизации.
+
+Больше информации можно найти на [официальном сайте](https://yandex.ru/dev/games/doc/en/sdk/sdk-player).
