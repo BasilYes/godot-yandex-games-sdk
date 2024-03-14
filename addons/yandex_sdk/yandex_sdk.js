@@ -142,6 +142,14 @@ function ShowAd(callback) {
             onError: function(error) {
                 callback('error')
                 console.log('Ad error');
+            },
+            onOpen: function() {
+                callback('open')
+                console.log('Ad open');
+            },
+            onOffline: function() {
+                callback('offile')
+                console.log('Ad offline');
             }
         }
     })
