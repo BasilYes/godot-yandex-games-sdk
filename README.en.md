@@ -34,7 +34,7 @@ First method you need to call. If you don't, others methods won't work. It's jus
 YandexSDK.show_ad() -> void
 ```
 
-Just show ad for user. Ad closing or cousing ad error will emmit **signal ad(result)**, result store 'closed' or 'error' String
+Just show ad for user. Ad closing or cousing ad error will emmit **signal ad(result)**, result store 'closed', 'opened', 'offline' or 'error' String
 
 ### Display ad for a reward
 
@@ -42,7 +42,7 @@ Just show ad for user. Ad closing or cousing ad error will emmit **signal ad(res
 YandexSDK.show_rewarded_ad() -> void
 ```
 
-Show rewarded ad for user. Will emmit **signal rewarded_ad(result)**, result store 'closed', 'rewaeded', 'closed' or 'error' String
+Show rewarded ad for user. Will emmit **signal rewarded_ad(result)**, result store 'rewarded', 'closed', 'opened', or 'error' String
 
 ### Initialization of player data
 
