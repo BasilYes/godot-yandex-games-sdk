@@ -1,6 +1,6 @@
 let ysdk;
 function InitGame(params, callback) {
-    console.log('Yandex SDK start initialisation');
+    console.log('Yandex SDK start initialization');
     YaGames.init(params).then(_sdk => {
         ysdk = _sdk;
         console.log('Yandex SDK initialized');
@@ -105,7 +105,7 @@ function LoadLeaderboardEntries(leaderboardName, includeUser, quantityAround, qu
 
 let player;
 function InitPlayer(full, callback) {
-    console.log('Player start initialisation');
+    console.log('Player start initialization');
     ysdk.getPlayer(full).then(_player => {
         player = _player;
         console.log('Player initialized');
@@ -148,7 +148,7 @@ function ShowAd(callback) {
                 console.log('Ad open');
             },
             onOffline: function() {
-                callback('offile')
+                callback('offline')
                 console.log('Ad offline');
             }
         }
