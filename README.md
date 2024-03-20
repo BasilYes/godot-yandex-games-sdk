@@ -42,7 +42,7 @@ YandexSDK.show_ad() -> void
 YandexSDK.show_rewarded_ad() -> void
 ```
 
-Показывает пользователю рекламу с наградой. Вызывает сигнал **rewarded_ad(result)**, переменная result содержит одно из строковых значений 'closed', 'rewaeded', 'closed', 'opened' или 'error'.
+Показывает пользователю рекламу с наградой. Вызывает сигнал **rewarded_ad(result)**, переменная result содержит одно из строковых значений 'rewarded', 'closed', 'opened' или 'error'.
 
 ### Инициализация данных игрока
 
