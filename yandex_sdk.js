@@ -141,10 +141,10 @@ function ShowAd(callback) {
             },
             onError: function(error) {
                 callback('error')
-                console.log('Ad error');
+                console.log('Ad error', error);
             },
             onOpen: function() {
-                callback('open')
+                callback('opened')
                 console.log('Ad open');
             },
             onOffline: function() {
