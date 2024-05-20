@@ -118,16 +118,16 @@ function InitPlayer(full, callback) {
 }
 
 function OpenAuthDialog() {
-  if (player.getMode() === 'lite') {
+	if (player.getMode() === 'lite') {
             // Игрок не авторизован.
-            ysdk.auth.openAuthDialog().then(() => {
+		ysdk.auth.openAuthDialog().then(() => {
                     // Игрок успешно авторизован
-                    player.catch(err => {
+				player.catch(err => {
                         // Ошибка при инициализации объекта Player.
-                    });
-                }).catch(() => {
+				});
+			}).catch(() => {
                     // Игрок не авторизован.
-                });
+			});
         }
 }
 
@@ -183,17 +183,29 @@ function ShowAdRewardedVideo(callback) {
 
 function SaveData(data, force) {
     console.log('Data save ', data);
-    player.setData(data, force).then(() => {
-        console.log('Data saved');
-    });
+    player.setData(data, force).then(
+		result => {
+			console.log('Data saved ', result, " ", data);
+		}
+	);
 }
 
 
 function SaveStats(data) {
     console.log('Stats save ', data);
-    player.setStats(data).then(() => {
-            console.log('Stats saved');
+    player.setStats(data).then(result => {
+		console.log('Stats saved ', result, " ", data);
     });
+}
+
+
+function loadAllData(callback) {
+    player.getData().then(
+        result => {
+			console.log("Data loaded ", result)
+            callback(result);
+        }
+    );
 }
 
 
@@ -201,12 +213,19 @@ function LoadData(keys, callback) {
     console.log('Data load ', keys);
     player.getData(keys).then(
         result => {
-            console.log('Data loaded');
-            callback("loaded", result);
-        },
-        error => {
-            console.log('Data load error');
-            callback("error");
+			console.log("Data loaded ", result)
+            callback(result);
+        }
+    );
+}
+
+
+function loadAllStats(callback) {
+    console.log('All stats load');
+    player.getStats().then(
+        result => {
+			console.log("Stats loaded ", result)
+            callback(result);
         }
     );
 }
@@ -216,12 +235,18 @@ function LoadStats(keys, callback) {
     console.log('Stats load ', keys);
     player.getStats(keys).then(
         result => {
-            console.log('Stats loaded');
-            callback("loaded", result);
-        },
-        error => {
-            console.log('Stats load error');
-            callback("error");
+			console.log("Stats loaded ", result)
+            callback(result);
+        }
+    );
+}
+
+
+function incrementStats(increments, callback) {
+    player.incrementStats(increments).then(
+        result => {
+			console.log("Stats incremented ", result)
+            callback(result);
         }
     );
 }

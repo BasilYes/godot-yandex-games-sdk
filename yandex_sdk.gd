@@ -17,6 +17,10 @@ var is_game_initialized : bool = false
 var is_player_initialized : bool = false
 var is_leaderboard_initialized: bool = false
 
+var is_game_initialization_started: bool = false
+var is_player_initialization_started: bool = false
+var is_leaderboard_initialization_started: bool = false
+
 var is_authorized: bool = false
 
 var callback_game_initialized = JavaScriptBridge.create_callback(_game_initialized)
@@ -40,118 +44,174 @@ func is_working() -> bool:
 
 
 func open_auth_dialog() -> void:
-	if OS.has_feature("yandex"):
-		if not is_player_initialized:
-			await player_initialized
-		if not is_authorized:
-			window.OpenAuthDialog()
+	if not OS.has_feature("yandex"):
+		return
+	if not is_player_initialized:
+		await player_initialized
+	if not is_authorized:
+		window.OpenAuthDialog()
 
 func check_is_authorized() -> void:
-	if OS.has_feature("yandex"):
-		if not is_player_initialized:
-			await player_initialized
-		if not is_authorized:
-			window.CheckAuth(callback_is_authorized)
+	if not OS.has_feature("yandex"):
+		return
+	if not is_player_initialized:
+		await player_initialized
+	if not is_authorized:
+		window.CheckAuth(callback_is_authorized)
 		
 func _is_authorized(answer) -> void:
 	is_authorized = answer
 	emit_signal("check_auth", answer)
 
 func init_leaderboard() -> void:
-	if OS.has_feature("yandex"):
-		if not is_leaderboard_initialized:
-			await game_initialized
-			window.InitLeaderboard(callback_leaderboard_initialized)
+	if not OS.has_feature("yandex"):
+		return
+	if not is_leaderboard_initialization_started:
+		is_leaderboard_initialization_started = true
+		await game_initialized
+		window.InitLeaderboard(callback_leaderboard_initialized)
 
 
 func init_game() -> void:
-	if OS.has_feature("yandex"):
-		if not is_game_initialized:
-			var options = JavaScriptBridge.create_object("Object")
-			window.InitGame(options, callback_game_initialized)
-			await game_initialized
+	if not OS.has_feature("yandex"):
+		return
+	if not is_game_initialization_started and not is_game_initialized:
+		is_game_initialization_started = true
+		var options = JavaScriptBridge.create_object("Object")
+		window.InitGame(options, callback_game_initialized)
 
 
 func show_interstitial_ad() -> void:
-	if OS.has_feature("yandex"):
-		if not is_game_initialized :
-			await game_initialized
-		window.ShowAd(callback_ad)
+	if not OS.has_feature("yandex"):
+		return
+	if not is_game_initialized :
+		await game_initialized
+	window.ShowAd(callback_ad)
 
 
 func show_rewarded_ad() -> void:
-	if OS.has_feature("yandex"):
-		if not is_game_initialized :
-			await game_initialized
-		window.ShowAdRewardedVideo(callback_rewarded_ad)
+	if not OS.has_feature("yandex"):
+		return
+	if not is_game_initialized :
+		await game_initialized
+	window.ShowAdRewardedVideo(callback_rewarded_ad)
 
 
 func init_player() -> void:
-	if OS.has_feature("yandex"):
-		if not is_game_initialized:
-			await game_initialized
-		window.InitPlayer(false, callback_player_initialized)
-		await player_initialized
+	if not OS.has_feature("yandex"):
+		return
+	if not is_game_initialized:
+		init_game()
+		await game_initialized
+	if is_player_initialization_started:
+		return
+	is_player_initialization_started = true
+	window.InitPlayer(false, callback_player_initialized)
 
 
 func save_data(data: Dictionary, flush: bool = false) -> void:
-	if OS.has_feature("yandex"):
-		if not is_player_initialized:
-			await game_initialized
-		var saves = JavaScriptBridge.create_object("Object")
-		for i in data.keys():
+	if not OS.has_feature("yandex"):
+		return
+	if not is_player_initialized:
+		init_player()
+		await player_initialized
+	var saves = JavaScriptBridge.create_object("Object")
+	for i in data.keys():
+		if data[i] is int:
+			saves[i] = float(data[i])
+		else:
 			saves[i] = data[i]
-		window.SaveData(saves, flush)
+	window.SaveData(saves, flush)
 
 
 func save_stats(stats: Dictionary) -> void:
-	if OS.has_feature("yandex"):
-		if not is_player_initialized:
-			await game_initialized
-		var saves = JavaScriptBridge.create_object("Object")
-		for i in stats.keys():
-			saves[i] = stats[i]
-		window.SaveStats(saves)
+	if not OS.has_feature("yandex"):
+		return
+	if not is_player_initialized:
+		init_player()
+		await player_initialized
+	var saves = JavaScriptBridge.create_object("Object")
+	for i in stats.keys():
+		saves[i] = float(stats[i])
+	window.SaveStats(saves)
+
+
+func increment_stats(increments: Dictionary) -> void:
+	if not OS.has_feature("yandex"):
+		return
+	if not is_player_initialized:
+		init_player()
+		await player_initialized
+	var saves = JavaScriptBridge.create_object("Object")
+	for i in increments.keys():
+		saves[i] = increments[i]
+	window.incrementStats(saves, callback_stats_loaded)
+
 
 func save_leaderboard_score(leaderboard_name, score, extra_data="") -> void:
-	if OS.has_feature("yandex"):
-		if not is_leaderboard_initialized:
-			await leaderboard_initialized
-		window.SaveLeaderboardScore(leaderboard_name, score, extra_data)
+	if not OS.has_feature("yandex"):
+		return
+	if not is_leaderboard_initialized:
+		await leaderboard_initialized
+	window.SaveLeaderboardScore(leaderboard_name, score, extra_data)
+
+
+func load_all_data() -> void:
+	if not OS.has_feature("yandex"):
+		return
+	if not is_player_initialized:
+		init_player()
+		await player_initialized
+	window.loadAllData(callback_data_loaded)
 
 
 func load_data(keys: Array) -> void:
-	if OS.has_feature("yandex"):
-		if not is_player_initialized:
-			await leaderboard_initialized
-		var saves = JavaScriptBridge.create_object("Array", keys.size())
-		for i in range(keys.size()):
-			saves[i] = keys[i]
-		window.LoadData(saves, callback_data_loaded)
+	if not OS.has_feature("yandex"):
+		return
+	if not is_player_initialized:
+		init_player()
+		await player_initialized
+	var saves = JavaScriptBridge.create_object("Array", keys.size())
+	for i in range(keys.size()):
+		saves[i] = keys[i]
+	window.LoadData(saves, callback_data_loaded)
+
+
+func load_all_stats() -> void:
+	if not OS.has_feature("yandex"):
+		return
+	if not is_player_initialized:
+		init_player()
+		await player_initialized
+	window.loadAllStats(callback_stats_loaded)
 
 
 func load_stats(keys: Array) -> void:
-	if OS.has_feature("yandex"):
-		if not is_player_initialized:
-			await leaderboard_initialized
-		var saves = JavaScriptBridge.create_object("Array", keys.size())
-		for i in range(keys.size()):
-			saves[i] = keys[i]
-		window.LoadStats(saves, callback_stats_loaded)
+	if not OS.has_feature("yandex"):
+		return
+	if not is_player_initialized:
+		init_player()
+		await player_initialized
+	var saves = JavaScriptBridge.create_object("Array", keys.size())
+	for i in range(keys.size()):
+		saves[i] = keys[i]
+	window.LoadStats(saves, callback_stats_loaded)
 
 
 func load_leaderboard_player_entry(leaderboard_name: String) -> void:
-	if OS.has_feature("yandex"):
-		if not is_leaderboard_initialized:
-			await leaderboard_initialized
-		window.LoadLeaderboardPlayerEntry(leaderboard_name, callback_leaderboard_player_entry_loaded)
+	if not OS.has_feature("yandex"):
+		return
+	if not is_leaderboard_initialized:
+		await leaderboard_initialized
+	window.LoadLeaderboardPlayerEntry(leaderboard_name, callback_leaderboard_player_entry_loaded)
 
 
 func load_leaderboard_entries(leaderboard_name: String, include_user: bool, quantity_around: int, quantity_top: int) -> void:
-	if OS.has_feature("yandex"):
-		if not is_leaderboard_initialized:
-			await leaderboard_initialized
-		window.LoadLeaderboardEntries(leaderboard_name, include_user, quantity_around, quantity_top, callback_leaderboard_entries_loaded)
+	if not OS.has_feature("yandex"):
+		return
+	if not is_leaderboard_initialized:
+		await leaderboard_initialized
+	window.LoadLeaderboardEntries(leaderboard_name, include_user, quantity_around, quantity_top, callback_leaderboard_entries_loaded)
 
 
 func _rewarded_ad(args) -> void:
@@ -165,23 +225,21 @@ func _interstitial_ad(args) -> void:
 
 
 func _data_loaded(args) -> void:
-	if args[0] == 'loaded':
-		var result := {}
-		var keys = JavaScriptBridge.get_interface("Object").keys(args[1])
-		var values = JavaScriptBridge.get_interface("Object").values(args[1])
-		for i in range(keys.length):
-			result[keys[i]] = values[i]
-		emit_signal("data_loaded", result)
+	var result := {}
+	var keys = JavaScriptBridge.get_interface("Object").keys(args[0])
+	var values = JavaScriptBridge.get_interface("Object").values(args[0])
+	for i in range(keys.length):
+		result[keys[i]] = values[i]
+	emit_signal("data_loaded", result)
 		
 
 func _stats_loaded(args) -> void:
-	if args[0] == 'loaded':
-		var result := {}
-		var keys = JavaScriptBridge.get_interface("Object").keys(args[1])
-		var values = JavaScriptBridge.get_interface("Object").values(args[1])
-		for i in range(keys.length):
-			result[keys[i]] = values[i]
-		emit_signal("stats_loaded", result)
+	var result := {}
+	var keys = JavaScriptBridge.get_interface("Object").keys(args[0])
+	var values = JavaScriptBridge.get_interface("Object").values(args[0])
+	for i in range(keys.length):
+		result[keys[i]] = values[i]
+	stats_loaded.emit(result)
 		
 
 func _leaderboard_player_entry_loaded(args) -> void:
