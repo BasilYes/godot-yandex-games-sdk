@@ -38,6 +38,29 @@ var callback_leaderboard_entries_loaded = JavaScriptBridge.create_callback(_lead
 
 @onready var window = JavaScriptBridge.get_interface("window")
 
+func _ready() -> void:
+	if is_working():
+		get_window().focus_entered.connect(func() -> void:
+				print("focus in signal")
+				if has_node("/root/SettingsSaves"):
+					AudioServer.set_bus_mute(0, get_node("/root/SettingsSaves").load_mute_volume("Master"))
+				else:
+					AudioServer.set_bus_mute(0, false)
+		)
+		get_window().focus_exited.connect(func() -> void:
+				print("focus out signal")
+				AudioServer.set_bus_mute(0, true)
+		)
+
+
+# func _notification(what: int) -> void:
+# 	if what == NOTIFICATION_WM_WINDOW_FOCUS_IN:
+# 		print("focus in notification")
+# 		pass
+# 	elif what == NOTIFICATION_WM_WINDOW_FOCUS_OUT:
+# 		print("focus out notification")
+# 		pass
+
 
 func is_working() -> bool:
 	return OS.has_feature("yandex")
