@@ -81,7 +81,7 @@ func check_is_authorized() -> void:
 		await player_initialized
 	if not is_authorized:
 		window.CheckAuth(callback_is_authorized)
-		
+
 func _is_authorized(answer) -> void:
 	is_authorized = answer
 	emit_signal("check_auth", answer)
@@ -94,7 +94,6 @@ func init_leaderboard() -> void:
 		await game_initialized
 		window.InitLeaderboard(callback_leaderboard_initialized)
 
-
 func init_game() -> void:
 	if not OS.has_feature("yandex"):
 		return
@@ -102,6 +101,21 @@ func init_game() -> void:
 		is_game_initialization_started = true
 		var options = JavaScriptBridge.create_object("Object")
 		window.InitGame(options, callback_game_initialized)
+
+# Analytics
+func gameplay_started() -> void:
+	if not OS.has_feature("yandex"):
+		return
+	if not is_game_initialized :
+		await game_initialized
+	window.GameplayStarted()
+
+func gameplay_stopped() -> void:
+	if not OS.has_feature("yandex"):
+		return
+	if not is_game_initialized :
+		await game_initialized
+	window.GameplayStopped()
 
 
 func show_interstitial_ad() -> void:
@@ -254,7 +268,7 @@ func _data_loaded(args) -> void:
 	for i in range(keys.length):
 		result[keys[i]] = values[i]
 	emit_signal("data_loaded", result)
-		
+
 
 func _stats_loaded(args) -> void:
 	var result := {}
@@ -263,7 +277,7 @@ func _stats_loaded(args) -> void:
 	for i in range(keys.length):
 		result[keys[i]] = values[i]
 	stats_loaded.emit(result)
-		
+
 
 func _leaderboard_player_entry_loaded(args) -> void:
 	if args[0] == 'loaded':
@@ -295,8 +309,8 @@ func _game_initialized(args) -> void:
 func _player_initialized(args) -> void:
 	is_player_initialized = true
 	emit_signal('player_initialized')
-	
-	
+
+
 func _leaderboard_initialized(args) -> void:
 	is_leaderboard_initialized = true
 	emit_signal("leaderboard_initialized")
