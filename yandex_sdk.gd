@@ -312,6 +312,7 @@ func _game_initialized(args) -> void:
 	tld = args[0].i18n.tld
 	payload = args[0].payload
 	is_game_initialized = true
+	TranslationServer.set_locale(lang)
 	emit_signal('game_initialized')
 
 
