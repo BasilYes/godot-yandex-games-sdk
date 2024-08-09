@@ -8,8 +8,9 @@ function InitGame(params, callback) {
 
 			ysdk.features.LoadingAPI?.ready();
 			console.log("Game initialized");
+			console.log("Environment", ysdk.environment);
 
-			callback();
+			callback(ysdk.environment);
 		})
 		.catch((err) => {
 			console.log(err);

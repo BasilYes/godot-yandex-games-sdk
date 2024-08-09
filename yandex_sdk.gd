@@ -23,6 +23,11 @@ var is_leaderboard_initialization_started: bool = false
 
 var is_authorized: bool = false
 
+var app_id: String = ""
+var lang: String = ""
+var tld: String = ""
+var payload: String = ""
+
 var callback_game_initialized = JavaScriptBridge.create_callback(_game_initialized)
 var callback_player_initialized = JavaScriptBridge.create_callback(_player_initialized)
 var callback_leaderboard_initialized = JavaScriptBridge.create_callback(_leaderboard_initialized)
@@ -302,6 +307,10 @@ func _leaderboard_entries_loaded(args) -> void:
 
 
 func _game_initialized(args) -> void:
+	app_id = args[0].app.id
+	lang = args[0].i18n.lang
+	tld = args[0].i18n.tld
+	payload = args[0].payload
 	is_game_initialized = true
 	emit_signal('game_initialized')
 
