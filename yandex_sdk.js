@@ -6,7 +6,6 @@ function InitGame(params, callback) {
 			ysdk = _sdk;
 			console.log("Yandex SDK initialized");
 
-			ysdk.features.LoadingAPI?.ready();
 			console.log("Game initialized");
 			console.log("Environment", ysdk.environment);
 
@@ -16,6 +15,11 @@ function InitGame(params, callback) {
 			console.log(err);
 			console.log("Game initialization error");
 		});
+}
+
+function GameReady() {
+	ysdk.features.LoadingAPI?.ready();
+	console.log("Game ready");
 }
 
 let player;

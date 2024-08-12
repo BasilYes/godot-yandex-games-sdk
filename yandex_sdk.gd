@@ -14,6 +14,7 @@ signal check_auth(answer)
 
 
 var is_game_initialized : bool = false
+var is_game_ready : bool = false
 var is_player_initialized : bool = false
 var is_leaderboard_initialized: bool = false
 
@@ -70,7 +71,6 @@ func _ready() -> void:
 func is_working() -> bool:
 	return OS.has_feature("yandex")
 
-
 func open_auth_dialog() -> void:
 	if not OS.has_feature("yandex"):
 		return
@@ -106,6 +106,15 @@ func init_game() -> void:
 		is_game_initialization_started = true
 		var options = JavaScriptBridge.create_object("Object")
 		window.InitGame(options, callback_game_initialized)
+
+func game_ready() -> void:
+	if not OS.has_feature("yandex"):
+		return
+	if not is_game_initialized:
+		await game_initialized
+	if not is_game_ready:
+		is_game_ready = true
+		window.GameReady()
 
 # Analytics
 func gameplay_started() -> void:
