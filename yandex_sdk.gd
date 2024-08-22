@@ -75,6 +75,7 @@ func open_auth_dialog() -> void:
 	if not OS.has_feature("yandex"):
 		return
 	if not is_player_initialized:
+		init_player()
 		await player_initialized
 	if not is_authorized:
 		window.OpenAuthDialog()
@@ -83,6 +84,7 @@ func check_is_authorized() -> void:
 	if not OS.has_feature("yandex"):
 		return
 	if not is_player_initialized:
+		init_player()
 		await player_initialized
 	if not is_authorized:
 		window.CheckAuth(callback_is_authorized)
@@ -111,6 +113,7 @@ func game_ready() -> void:
 	if not OS.has_feature("yandex"):
 		return
 	if not is_game_initialized:
+		init_game()
 		await game_initialized
 	if not is_game_ready:
 		is_game_ready = true
@@ -120,14 +123,16 @@ func game_ready() -> void:
 func gameplay_started() -> void:
 	if not OS.has_feature("yandex"):
 		return
-	if not is_game_initialized :
+	if not is_game_initialized:
+		init_game()
 		await game_initialized
 	window.GameplayStarted()
 
 func gameplay_stopped() -> void:
 	if not OS.has_feature("yandex"):
 		return
-	if not is_game_initialized :
+	if not is_game_initialized:
+		init_game()
 		await game_initialized
 	window.GameplayStopped()
 
@@ -135,7 +140,8 @@ func gameplay_stopped() -> void:
 func show_interstitial_ad() -> void:
 	if not OS.has_feature("yandex"):
 		return
-	if not is_game_initialized :
+	if not is_game_initialized:
+		init_game()
 		await game_initialized
 	window.ShowAd(callback_ad)
 
@@ -143,7 +149,8 @@ func show_interstitial_ad() -> void:
 func show_rewarded_ad() -> void:
 	if not OS.has_feature("yandex"):
 		return
-	if not is_game_initialized :
+	if not is_game_initialized:
+		init_game()
 		await game_initialized
 	window.ShowAdRewardedVideo(callback_rewarded_ad)
 
