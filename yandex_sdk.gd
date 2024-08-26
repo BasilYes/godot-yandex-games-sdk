@@ -13,9 +13,9 @@ signal stats_loaded(stats)
 signal check_auth(answer)
 
 
-var is_game_initialized : bool = false
-var is_game_ready : bool = false
-var is_player_initialized : bool = false
+var is_game_initialized: bool = false
+var is_game_ready: bool = false
+var is_player_initialized: bool = false
 var is_leaderboard_initialized: bool = false
 
 var is_game_initialization_started: bool = false
@@ -90,7 +90,7 @@ func check_is_authorized() -> void:
 		window.CheckAuth(callback_is_authorized)
 
 func _is_authorized(answer) -> void:
-	is_authorized = answer
+	answer = is_authorized
 	emit_signal("check_auth", answer)
 
 func init_leaderboard() -> void:
