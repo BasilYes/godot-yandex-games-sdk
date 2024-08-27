@@ -1,16 +1,16 @@
 extends Node
 
 
-signal rewarded_ad(result)
-signal interstitial_ad(result)
+signal rewarded_ad(result: String)
+signal interstitial_ad(result: String)
 signal game_initialized()
 signal player_initialized()
 signal leaderboard_initialized()
 signal data_loaded(data)
 signal leaderboard_player_entry_loaded(data)
 signal leaderboard_entries_loaded(data)
-signal stats_loaded(stats)
-signal check_auth(answer)
+signal stats_loaded(stats: Dictionary)
+signal check_auth(answer: bool)
 
 
 var is_game_initialized : bool = false
@@ -90,8 +90,8 @@ func check_is_authorized() -> void:
 		window.CheckAuth(callback_is_authorized)
 
 func _is_authorized(answer) -> void:
-	is_authorized = answer
-	emit_signal("check_auth", answer)
+	is_authorized = answer[0]
+	check_auth.emit(is_authorized)
 
 func init_leaderboard() -> void:
 	if not OS.has_feature("yandex"):
@@ -274,12 +274,12 @@ func load_leaderboard_entries(leaderboard_name: String, include_user: bool, quan
 
 func _rewarded_ad(args) -> void:
 	print("rewarded ad res: ", args[0])
-	emit_signal("rewarded_ad", args)
+	rewarded_ad.emit(args[0])
 
 
 func _interstitial_ad(args) -> void:
 	print("ad res: ", args[0])
-	emit_signal("interstitial_ad", args[0])
+	interstitial_ad.emit(args[0])
 
 
 func _data_loaded(args) -> void:
@@ -288,7 +288,7 @@ func _data_loaded(args) -> void:
 	var values = JavaScriptBridge.get_interface("Object").values(args[0])
 	for i in range(keys.length):
 		result[keys[i]] = values[i]
-	emit_signal("data_loaded", result)
+	data_loaded.emit(result)
 
 
 func _stats_loaded(args) -> void:
@@ -307,7 +307,7 @@ func _leaderboard_player_entry_loaded(args) -> void:
 		var values = JavaScriptBridge.get_interface("Object").values(args[1])
 		for i in range(keys.length):
 			result[keys[i]] = values[i]
-		emit_signal("leaderboard_player_entry_loaded", result)
+		leaderboard_player_entry_loaded.emit(result)
 
 
 func _leaderboard_entries_loaded(args) -> void:
@@ -317,7 +317,7 @@ func _leaderboard_entries_loaded(args) -> void:
 		var values = JavaScriptBridge.get_interface("Object").values(args[1])
 		for i in range(keys.length):
 			result[keys[i]] = values[i]
-		emit_signal("leaderboard_entries_loaded", result)
+		leaderboard_entries_loaded.emit(result)
 	elif args[0] == 'error':
 		print("Произошла ошибка при загрузке лидерборда.")
 
@@ -329,14 +329,14 @@ func _game_initialized(args) -> void:
 	payload = args[0].payload
 	is_game_initialized = true
 	TranslationServer.set_locale(lang)
-	emit_signal('game_initialized')
+	game_initialized.emit()
 
 
 func _player_initialized(args) -> void:
 	is_player_initialized = true
-	emit_signal('player_initialized')
+	player_initialized.emit()
 
 
 func _leaderboard_initialized(args) -> void:
 	is_leaderboard_initialized = true
-	emit_signal("leaderboard_initialized")
+	leaderboard_initialized.emit()
