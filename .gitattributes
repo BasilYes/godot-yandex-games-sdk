@@ -4,8 +4,8 @@
 /.gitmodules                            export-ignore
 .github/                                export-ignore
 /README.md                              export-ignore
+/README.en.md                           export-ignore
 /CONTRIBUTING.md                        export-ignore
-/LICENSE                                export-ignore
 
 # Test stuff
 /main.gd                                export-ignore
