@@ -24,6 +24,9 @@ var is_leaderboard_initialization_started: bool = false
 
 var is_authorized: bool = false
 
+var is_ad_on_screen: bool = false
+var is_rewarded_ad_on_screen: bool = false
+
 var app_id: String = ""
 var lang: String = ""
 var tld: String = ""
@@ -44,19 +47,22 @@ var callback_leaderboard_entries_loaded = JavaScriptBridge.create_callback(_lead
 
 @onready var window = JavaScriptBridge.get_interface("window")
 
+
+
 func _ready() -> void:
 	if is_working():
-		get_window().focus_entered.connect(func() -> void:
-				print("focus in signal")
-				if has_node("/root/SettingsSaves"):
-					AudioServer.set_bus_mute(0, get_node("/root/SettingsSaves").load_mute_volume("Master"))
-				else:
-					AudioServer.set_bus_mute(0, false)
-		)
-		get_window().focus_exited.connect(func() -> void:
-				print("focus out signal")
-				AudioServer.set_bus_mute(0, true)
-		)
+		get_window().focus_entered.connect(_update_mute)
+		get_window().focus_exited.connect(_update_mute)
+
+
+func _update_mute() -> void:
+	if get_window().has_focus() and not is_ad_on_screen and not is_rewarded_ad_on_screen:
+		if has_node("/root/SettingsSaves"):
+			AudioServer.set_bus_mute(0, get_node("/root/SettingsSaves").load_mute_volume("Master"))
+		else:
+			AudioServer.set_bus_mute(0, false)
+	else:
+		AudioServer.set_bus_mute(0, true)
 
 
 # func _notification(what: int) -> void:
@@ -274,11 +280,27 @@ func load_leaderboard_entries(leaderboard_name: String, include_user: bool, quan
 
 func _rewarded_ad(args) -> void:
 	print("rewarded ad res: ", args[0])
+	match args[0]:
+		"opened":
+			is_rewarded_ad_on_screen = true
+		"closed":
+			is_rewarded_ad_on_screen = false
+		"error":
+			is_rewarded_ad_on_screen = false
+	_update_mute()
 	rewarded_ad.emit(args[0])
 
 
 func _interstitial_ad(args) -> void:
 	print("ad res: ", args[0])
+	match args[0]:
+		"opened":
+			is_ad_on_screen = true
+		"closed":
+			is_ad_on_screen = false
+		"error":
+			is_ad_on_screen = false
+	_update_mute()
 	interstitial_ad.emit(args[0])
 
 
