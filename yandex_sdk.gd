@@ -32,20 +32,20 @@ var lang: String = ""
 var tld: String = ""
 var payload: String = ""
 
-var callback_game_initialized = JavaScriptBridge.create_callback(_game_initialized)
-var callback_player_initialized = JavaScriptBridge.create_callback(_player_initialized)
-var callback_leaderboard_initialized = JavaScriptBridge.create_callback(_leaderboard_initialized)
-
-var callback_rewarded_ad = JavaScriptBridge.create_callback(_rewarded_ad)
-var callback_ad = JavaScriptBridge.create_callback(_interstitial_ad)
-var callback_is_authorized = JavaScriptBridge.create_callback(_is_authorized)
-
-var callback_data_loaded = JavaScriptBridge.create_callback(_data_loaded)
-var callback_stats_loaded = JavaScriptBridge.create_callback(_stats_loaded)
-var callback_leaderboard_player_entry_loaded = JavaScriptBridge.create_callback(_leaderboard_player_entry_loaded)
-var callback_leaderboard_entries_loaded = JavaScriptBridge.create_callback(_leaderboard_entries_loaded)
-
 @onready var window = JavaScriptBridge.get_interface("window")
+
+@onready var callback_game_initialized = JavaScriptBridge.create_callback(_game_initialized)
+@onready var callback_player_initialized = JavaScriptBridge.create_callback(_player_initialized)
+@onready var callback_leaderboard_initialized = JavaScriptBridge.create_callback(_leaderboard_initialized)
+
+@onready var callback_rewarded_ad = JavaScriptBridge.create_callback(_rewarded_ad)
+@onready var callback_ad = JavaScriptBridge.create_callback(_interstitial_ad)
+@onready var callback_is_authorized = JavaScriptBridge.create_callback(_is_authorized)
+
+@onready var callback_data_loaded = JavaScriptBridge.create_callback(_data_loaded)
+@onready var callback_stats_loaded = JavaScriptBridge.create_callback(_stats_loaded)
+@onready var callback_leaderboard_player_entry_loaded = JavaScriptBridge.create_callback(_leaderboard_player_entry_loaded)
+@onready var callback_leaderboard_entries_loaded = JavaScriptBridge.create_callback(_leaderboard_entries_loaded)
 
 
 
@@ -348,7 +348,8 @@ func _game_initialized(args) -> void:
 	app_id = args[0].app.id
 	lang = args[0].i18n.lang
 	tld = args[0].i18n.tld
-	payload = args[0].payload
+	if args[0].payload == null: payload = ""
+	else: payload = args[0].payload
 	is_game_initialized = true
 	TranslationServer.set_locale(lang)
 	game_initialized.emit()
