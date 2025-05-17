@@ -50,6 +50,7 @@ var payload: String = ""
 
 
 func _ready() -> void:
+	process_mode = Node.PROCESS_MODE_ALWAYS
 	if is_working():
 		get_window().focus_entered.connect(_update_mute)
 		get_window().focus_exited.connect(_update_mute)
