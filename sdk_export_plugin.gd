@@ -2,7 +2,7 @@
 extends EditorExportPlugin
 
 const JS_FILE = "yandex_sdk.js"
-const JS_SDK_REF = "https://yandex.ru/games/sdk/v2"
+const JS_SDK_REF = "/sdk.js"
 
 var plugin_path: String = get_script().resource_path.get_base_dir()
 var exporting := false
