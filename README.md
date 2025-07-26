@@ -100,7 +100,7 @@ YandexSDK.load_stats(keys: Array) -> void
 * **keys**: список ключей, которые необходимо вернуть.
 
 ### Инициализация лидербордов
-
+> ⚠️ **Deprecated**: Этот метод устарел, теперь не нужно вызывать этот метод для работы с лидербордами
 ```gdscript
 YandexSDK.init_leaderboard() -> void
 ```
