@@ -94,7 +94,7 @@ Send request for get player's numeric data, when done emit **signal stats_loaded
 * **keys**: array, the list of keys to return.
 
 ### Initialize Leaderboards
-
+> ⚠️ **Deprecated**: This method has been deprecated, you no longer need to call this method to work with leaderboards
 ```gdscript
 YandexSDK.init_leaderboard() -> void
 ```
