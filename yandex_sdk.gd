@@ -36,7 +36,6 @@ var payload: String = ""
 
 @onready var callback_game_initialized = JavaScriptBridge.create_callback(_game_initialized)
 @onready var callback_player_initialized = JavaScriptBridge.create_callback(_player_initialized)
-@onready var callback_leaderboard_initialized = JavaScriptBridge.create_callback(_leaderboard_initialized)
 
 @onready var callback_rewarded_ad = JavaScriptBridge.create_callback(_rewarded_ad)
 @onready var callback_ad = JavaScriptBridge.create_callback(_interstitial_ad)
@@ -100,13 +99,15 @@ func _is_authorized(answer) -> void:
 	is_authorized = answer[0]
 	check_auth.emit(is_authorized)
 
+## устаревший метод
 func init_leaderboard() -> void:
 	if not OS.has_feature("yandex"):
 		return
 	if not is_leaderboard_initialization_started:
 		is_leaderboard_initialization_started = true
 		await game_initialized
-		window.InitLeaderboard(callback_leaderboard_initialized)
+		# window.InitLeaderboard(callback_leaderboard_initialized)
+		_leaderboard_initialized(args) # что бы игра не зависала на методе init_leaderboard в ожидании ответа
 
 func init_game() -> void:
 	if not OS.has_feature("yandex"):

@@ -68,25 +68,8 @@ function GameplayStopped() {
 }
 
 // Leader boards
-var lb;
-function InitLeaderboard(callback) {
-	console.log("Leaderboard start initialization");
-	ysdk
-		.getLeaderboards()
-		.then((_lb) => {
-			lb = _lb;
-			console.log("Leaderboard initialized");
-
-			callback();
-		})
-		.catch((err) => {
-			console.log(err);
-			console.log("Leaderboard initialization error");
-		});
-}
-
 function GetLeaderboardDescription(leaderboardName, callback) {
-	lb.getLeaderboardDescription(leaderboardName).then(
+	ysdk.leaderboards.getDescription(leaderboardName).then(
 		(result) => {
 			console.log("Leaderboard description:");
 			console.log(result);
@@ -121,13 +104,13 @@ function SaveLeaderboardScore(leaderboardName, score, extraData) {
 		"with",
 		extraData,
 	);
-	lb.setLeaderboardScore(leaderboardName, score, extraData).then(() => {
+	ysdk.leaderboards.setScore(leaderboardName, score, extraData).then(() => {
 		console.log("Leaderboard score saved");
 	});
 }
 
 function LoadLeaderboardPlayerEntry(leaderboardName, callback) {
-	lb.getLeaderboardPlayerEntry(leaderboardName)
+	ysdk.leaderboards.getPlayerEntry(leaderboardName)
 		.then((res) => {
 			console.log("Loader leaderboard player entry:", res);
 			callback("loaded", res);
@@ -147,7 +130,7 @@ function LoadLeaderboardEntries(
 	quantityTop,
 	callback,
 ) {
-	lb.getLeaderboardEntries(leaderboardName, {
+	ysdk.leaderboards.getEntries(leaderboardName, {
 		includeUser: includeUser,
 		quantityAround: quantityAround,
 		quantityTop: quantityTop,
