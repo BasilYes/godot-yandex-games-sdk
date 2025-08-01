@@ -107,7 +107,7 @@ func init_leaderboard() -> void:
 		is_leaderboard_initialization_started = true
 		await game_initialized
 		# window.InitLeaderboard(callback_leaderboard_initialized)
-		_leaderboard_initialized(args) # что бы игра не зависала на методе init_leaderboard в ожидании ответа
+		_leaderboard_initialized(null) # что бы игра не зависала на методе init_leaderboard в ожидании ответа
 
 func init_game() -> void:
 	if not OS.has_feature("yandex"):
