@@ -11,6 +11,7 @@ signal leaderboard_player_entry_loaded(data)
 signal leaderboard_entries_loaded(data)
 signal stats_loaded(stats: Dictionary)
 signal check_auth(answer: bool)
+signal check_can_review(data)
 
 
 var is_game_initialized : bool = false
@@ -45,6 +46,8 @@ var payload: String = ""
 @onready var callback_stats_loaded = JavaScriptBridge.create_callback(_stats_loaded)
 @onready var callback_leaderboard_player_entry_loaded = JavaScriptBridge.create_callback(_leaderboard_player_entry_loaded)
 @onready var callback_leaderboard_entries_loaded = JavaScriptBridge.create_callback(_leaderboard_entries_loaded)
+
+@onready var callback_can_review = JavaScriptBridge.create_callback(_can_review)
 
 
 
@@ -365,3 +368,11 @@ func _player_initialized(args) -> void:
 func _leaderboard_initialized(args) -> void:
 	is_leaderboard_initialized = true
 	leaderboard_initialized.emit()
+
+func can_review() -> void:
+	if not OS.has_feature("yandex"):
+		return
+	window.canReview(callback_can_review)
+
+func _can_review(args) -> void:
+	check_can_review.emit(args)

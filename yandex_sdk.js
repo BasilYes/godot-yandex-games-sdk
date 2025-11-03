@@ -248,3 +248,17 @@ function incrementStats(increments, callback) {
 		callback(result);
 	});
 }
+
+function canReview(callback) {
+	ysdk.feedback.canReview()
+        .then(({ value, reason }) => {
+            if (value) {
+                ysdk.feedback.requestReview()
+                    .then(({ feedbackSent }) => {
+                        callback(feedbackSent);
+                    });
+            } else {
+                callback(reason);
+            }
+    });
+}

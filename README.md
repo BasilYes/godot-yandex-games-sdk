@@ -158,4 +158,12 @@ YandexSDK.open_auth_dialog() -> void`
 
 Открывает окно авторизации игрока. Перед открытием окна выполняет проверку авторизации.
 
+### Запрос оценки
+
+```gdscript
+YandexSDK.can_review() -> void
+```
+
+Запрашивает у пользователя возможность поставить оценку. После проверки вызывает сигнал **check_can_review(value)**, где **value** - причина отказа в запросе оценки. [Подробнее в документации](https://yandex.ru/dev/games/doc/ru/sdk/sdk-review)
+
 Больше информации можно найти на [официальном сайте](https://yandex.ru/dev/games/doc/en/sdk/sdk-player).
