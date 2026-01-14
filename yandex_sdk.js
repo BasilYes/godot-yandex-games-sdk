@@ -248,3 +248,111 @@ function incrementStats(increments, callback) {
 		callback(result);
 	});
 }
+
+// Payments
+let payments = null;
+
+function InitPayments(callback) {
+	ysdk.getPayments({ signed: true }).then((_payments) => {
+		payments = _payments;
+		console.log("Payments initialized");
+		callback();
+	}).catch((err) => {
+		console.log("Payments initialization error", err);
+		callback();
+	});
+}
+
+
+function Purchase(id, developerPayload, callback) {
+	if (payments != null) {
+		payments.purchase({ id: id, developerPayload: developerPayload }).then((purchase) => {
+			console.log("Purchase success", purchase);
+
+			// Unwrap signed data if present
+			var result = purchase;
+			if (purchase.data) {
+				result = purchase.data;
+			} else if (purchase.purchaseData) { // Handle potential wrapper seen in logs
+				result = purchase.purchaseData;
+			}
+
+			callback("success", result);
+		}).catch((err) => {
+			console.log("Purchase failed", err);
+			callback("error", err);
+		});
+	} else {
+		console.log("Payments not initialized");
+		callback("error", "Payments not initialized");
+	}
+}
+
+function GetPurchases(callback) {
+	if (payments != null) {
+		payments.getPurchases().then((purchases) => {
+			console.log("Purchases loaded", purchases);
+
+			// Unwrap signed data if present
+			var result = purchases;
+			if (purchases.data) {
+				result = purchases.data;
+			} else if (purchases.purchaseData) {
+				result = purchases.purchaseData;
+			}
+
+			callback("success", result);
+		}).catch((err) => {
+			console.log("Purchases load failed", err);
+			callback("error", err);
+		});
+	} else {
+		console.log("Payments not initialized");
+		callback("error", "Payments not initialized");
+	}
+}
+
+
+function GetCatalog(callback) {
+	if (payments != null) {
+		payments.getCatalog().then((products) => {
+			console.log("Catalog loaded", products);
+			// Process products to be friendly for Godot (e.g. image handling might be needed but for now passing raw objects)
+			// Helper to get image URL might be needed on GD side or here. 
+			// The doc says Product has getPriceCurrencyImage(size). 
+			// We will just pass the basic properties + imageURI.
+			let result = products.map(p => ({
+				id: p.id,
+				title: p.title,
+				description: p.description,
+				imageURI: p.imageURI,
+				price: p.price,
+				priceValue: p.priceValue,
+				priceCurrencyCode: p.priceCurrencyCode
+			}));
+
+			callback("success", result);
+		}).catch((err) => {
+			console.log("Catalog load failed", err);
+			callback("error", err);
+		});
+	} else {
+		console.log("Payments not initialized");
+		callback("error", "Payments not initialized");
+	}
+}
+
+function ConsumePurchase(purchaseToken, callback) {
+	if (payments != null) {
+		payments.consumePurchase(purchaseToken).then(() => {
+			console.log("Purchase consumed");
+			callback("success");
+		}).catch((err) => {
+			console.log("Consume failed", err);
+			callback("error", err);
+		});
+	} else {
+		console.log("Payments not initialized");
+		callback("error", "Payments not initialized");
+	}
+}

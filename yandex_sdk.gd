@@ -13,9 +13,9 @@ signal stats_loaded(stats: Dictionary)
 signal check_auth(answer: bool)
 
 
-var is_game_initialized : bool = false
-var is_game_ready : bool = false
-var is_player_initialized : bool = false
+var is_game_initialized: bool = false
+var is_game_ready: bool = false
+var is_player_initialized: bool = false
 var is_leaderboard_initialized: bool = false
 
 var is_game_initialization_started: bool = false
@@ -45,7 +45,6 @@ var payload: String = ""
 @onready var callback_stats_loaded = JavaScriptBridge.create_callback(_stats_loaded)
 @onready var callback_leaderboard_player_entry_loaded = JavaScriptBridge.create_callback(_leaderboard_player_entry_loaded)
 @onready var callback_leaderboard_entries_loaded = JavaScriptBridge.create_callback(_leaderboard_entries_loaded)
-
 
 
 func _ready() -> void:
@@ -214,7 +213,7 @@ func increment_stats(increments: Dictionary) -> void:
 	window.incrementStats(saves, callback_stats_loaded)
 
 
-func save_leaderboard_score(leaderboard_name, score, extra_data="") -> void:
+func save_leaderboard_score(leaderboard_name, score, extra_data = "") -> void:
 	if not OS.has_feature("yandex"):
 		return
 	if not is_leaderboard_initialized:
@@ -365,3 +364,131 @@ func _player_initialized(args) -> void:
 func _leaderboard_initialized(args) -> void:
 	is_leaderboard_initialized = true
 	leaderboard_initialized.emit()
+
+# Payments
+signal payments_initialized()
+signal purchase_success(purchase)
+signal purchase_failed(error)
+signal purchases_loaded(purchases)
+signal catalog_loaded(products)
+signal consume_success()
+signal consume_failed(error)
+
+var is_payments_initialized: bool = false
+@onready var callback_payments_initialized = JavaScriptBridge.create_callback(_payments_initialized)
+@onready var callback_purchase = JavaScriptBridge.create_callback(_purchase_callback)
+@onready var callback_purchases_loaded = JavaScriptBridge.create_callback(_purchases_loaded_callback)
+@onready var callback_catalog_loaded = JavaScriptBridge.create_callback(_catalog_loaded_callback)
+@onready var callback_consume = JavaScriptBridge.create_callback(_consume_callback)
+
+func init_payments() -> void:
+	if not OS.has_feature("yandex"):
+		return
+	if not is_game_initialized:
+		init_game()
+		await game_initialized
+	
+	window.InitPayments(callback_payments_initialized)
+
+func purchase(id: String, developer_payload: String = "") -> void:
+	if not OS.has_feature("yandex"):
+		return
+	if not is_payments_initialized:
+		init_payments()
+		await payments_initialized
+		
+	window.Purchase(id, developer_payload, callback_purchase)
+
+func get_purchases() -> void:
+	if not OS.has_feature("yandex"):
+		return
+	if not is_payments_initialized:
+		init_payments()
+		await payments_initialized
+		
+	window.GetPurchases(callback_purchases_loaded)
+
+func get_catalog() -> void:
+	if not OS.has_feature("yandex"):
+		return
+	if not is_payments_initialized:
+		init_payments()
+		await payments_initialized
+		
+	window.GetCatalog(callback_catalog_loaded)
+
+func consume_purchase(purchase_token: String) -> void:
+	if not OS.has_feature("yandex"):
+		return
+	if not is_payments_initialized:
+		init_payments()
+		await payments_initialized
+		
+	window.ConsumePurchase(purchase_token, callback_consume)
+
+func _payments_initialized(args) -> void:
+	is_payments_initialized = true
+	payments_initialized.emit()
+
+func _purchase_callback(args) -> void:
+	var status = args[0]
+	if status == "success":
+		var purchase = _js_object_to_dict(args[1])
+		purchase_success.emit(purchase)
+	else:
+		purchase_failed.emit(str(args[1]))
+
+func _purchases_loaded_callback(args) -> void:
+	var status = args[0]
+	if status == "success":
+		var purchases_list = []
+		var js_array = args[1]
+		for i in range(js_array.length):
+			purchases_list.append(_js_object_to_dict(js_array[i]))
+		purchases_loaded.emit(purchases_list)
+	else:
+		print("Purchases load error: ", args[1])
+		purchases_loaded.emit([])
+
+func _catalog_loaded_callback(args) -> void:
+	var status = args[0]
+	if status == "success":
+		var products_list = []
+		var js_array = args[1]
+		for i in range(js_array.length):
+			products_list.append(_js_object_to_dict(js_array[i]))
+		catalog_loaded.emit(products_list)
+	else:
+		print("Catalog load error: ", args[1])
+		catalog_loaded.emit([])
+
+func _consume_callback(args) -> void:
+	var status = args[0]
+	if status == "success":
+		consume_success.emit()
+	else:
+		consume_failed.emit(str(args[1]))
+
+func _js_object_to_dict(js_obj) -> Variant:
+	if js_obj == null:
+		return null
+	
+	# Check if it's an array
+	if JavaScriptBridge.get_interface("Array").isArray(js_obj):
+		var arr = []
+		for i in range(js_obj.length):
+			arr.append(_js_object_to_dict(js_obj[i]))
+		return arr
+	
+	# Check if it's an object (generic check)
+	# We assume it is a dictionary-like object if it's not an array and not a primitive
+	if typeof(js_obj) == TYPE_OBJECT:
+		var dict = {}
+		var keys = JavaScriptBridge.get_interface("Object").keys(js_obj)
+		var values = JavaScriptBridge.get_interface("Object").values(js_obj)
+		for i in range(keys.length):
+			dict[keys[i]] = _js_object_to_dict(values[i])
+		return dict
+		
+	# Primitive types (int, string, bool, etc.) are handled automatically by Godot
+	return js_obj
