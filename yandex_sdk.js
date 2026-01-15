@@ -317,19 +317,32 @@ function GetCatalog(callback) {
 	if (payments != null) {
 		payments.getCatalog().then((products) => {
 			console.log("Catalog loaded", products);
-			// Process products to be friendly for Godot (e.g. image handling might be needed but for now passing raw objects)
-			// Helper to get image URL might be needed on GD side or here. 
-			// The doc says Product has getPriceCurrencyImage(size). 
-			// We will just pass the basic properties + imageURI.
-			let result = products.map(p => ({
-				id: p.id,
-				title: p.title,
-				description: p.description,
-				imageURI: p.imageURI,
-				price: p.price,
-				priceValue: p.priceValue,
-				priceCurrencyCode: p.priceCurrencyCode
-			}));
+			// Process products to include currency image as per Yandex requirements
+			let result = products.map(p => {
+				let productData = {
+					id: p.id,
+					title: p.title,
+					description: p.description,
+					imageURI: p.imageURI,
+					price: p.price,
+					priceValue: p.priceValue,
+					priceCurrencyCode: p.priceCurrencyCode
+				};
+
+				// Get currency icon URL if the method is available
+				if (typeof p.getPriceCurrencyImage === 'function') {
+					try {
+						productData.priceCurrencyImage = p.getPriceCurrencyImage('medium');
+					} catch (e) {
+						console.log("Error getting currency image for product", p.id, e);
+						productData.priceCurrencyImage = "";
+					}
+				} else {
+					productData.priceCurrencyImage = "";
+				}
+
+				return productData;
+			});
 
 			callback("success", result);
 		}).catch((err) => {
