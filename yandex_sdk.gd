@@ -123,10 +123,8 @@ func init_leaderboard() -> void:
 func init_game() -> void:
 	if not OS.has_feature("yandex"):
 		return
-	print("[YSDK DEBUG] init_game called. Started: %s, Initialized: %s" % [is_game_initialization_started, is_game_initialized])
 	if not is_game_initialization_started and not is_game_initialized:
 		is_game_initialization_started = true
-		print("[YSDK DEBUG] Calling window.InitGame")
 		var options = JavaScriptBridge.create_object("Object")
 		window.InitGame(options, callback_game_initialized)
 
@@ -179,30 +177,22 @@ func show_rewarded_ad() -> void:
 func init_player() -> void:
 	if not OS.has_feature("yandex"):
 		return
-	print("[YSDK DEBUG] init_player called. Started: %s, Initialized: %s" % [is_player_initialization_started, is_player_initialized])
 	if not is_game_initialized:
-		print("[YSDK DEBUG] waiting for game_initialized...")
 		init_game()
 		await game_initialized
-		print("[YSDK DEBUG] game_initialized done. Proceeding to player init.")
 		
 	if is_player_initialization_started:
-		print("[YSDK DEBUG] Player init already started. Returning.")
 		return
 	is_player_initialization_started = true
-	print("[YSDK DEBUG] Calling window.InitPlayer")
 	window.InitPlayer(false, callback_player_initialized)
 
 
 func save_data(data: Dictionary, flush: bool = false) -> void:
 	if not OS.has_feature("yandex"):
 		return
-	print("[YSDK DEBUG] save_data called.")
 	if not is_player_initialized:
-		print("[YSDK DEBUG] waiting for player_initialized (save_data)...")
 		init_player()
 		await player_initialized
-		print("[YSDK DEBUG] player_initialized done (save_data).")
 		
 	var saves = JavaScriptBridge.create_object("Object")
 	for i in data.keys():
@@ -210,7 +200,6 @@ func save_data(data: Dictionary, flush: bool = false) -> void:
 			saves[i] = float(data[i])
 		else:
 			saves[i] = data[i]
-	print("[YSDK DEBUG] Calling window.SaveData")
 	window.SaveData(saves, flush)
 
 
@@ -249,14 +238,10 @@ func save_leaderboard_score(leaderboard_name, score, extra_data = "") -> void:
 func load_all_data() -> void:
 	if not OS.has_feature("yandex"):
 		return
-	print("[YSDK DEBUG] load_all_data called.")
 	if not is_player_initialized:
-		print("[YSDK DEBUG] waiting for player_initialized (load_all_data)...")
 		init_player()
 		await player_initialized
-		print("[YSDK DEBUG] player_initialized done (load_all_data).")
 		
-	print("[YSDK DEBUG] Calling window.loadAllData")
 	window.loadAllData(callback_data_loaded)
 
 
@@ -310,33 +295,25 @@ func load_leaderboard_entries(leaderboard_name: String, include_user: bool, quan
 
 
 func _rewarded_ad(args) -> void:
-	print("[YSDK AUDIO] Rewarded ad callback: ", args[0])
 	match args[0]:
 		"opened":
 			is_rewarded_ad_on_screen = true
-			print("[YSDK AUDIO] Rewarded ad opened - muting audio")
 		"closed":
 			is_rewarded_ad_on_screen = false
-			print("[YSDK AUDIO] Rewarded ad closed - restoring audio")
 		"error":
 			is_rewarded_ad_on_screen = false
-			print("[YSDK AUDIO] Rewarded ad error - restoring audio")
 	_update_mute()
 	rewarded_ad.emit(args[0])
 
 
 func _interstitial_ad(args) -> void:
-	print("[YSDK AUDIO] Interstitial ad callback: ", args[0])
 	match args[0]:
 		"opened":
 			is_ad_on_screen = true
-			print("[YSDK AUDIO] Interstitial ad opened - muting audio")
 		"closed":
 			is_ad_on_screen = false
-			print("[YSDK AUDIO] Interstitial ad closed - restoring audio")
 		"error":
 			is_ad_on_screen = false
-			print("[YSDK AUDIO] Interstitial ad error - restoring audio")
 	_update_mute()
 	interstitial_ad.emit(args[0])
 
@@ -382,7 +359,6 @@ func _leaderboard_entries_loaded(args) -> void:
 
 
 func _game_initialized(args) -> void:
-	print("[YSDK DEBUG] _game_initialized callback.")
 	app_id = args[0].app.id
 	lang = args[0].i18n.lang
 	tld = args[0].i18n.tld
@@ -394,7 +370,6 @@ func _game_initialized(args) -> void:
 
 
 func _player_initialized(args) -> void:
-	print("[YSDK DEBUG] _player_initialized callback.")
 	is_player_initialized = true
 	player_initialized.emit()
 
